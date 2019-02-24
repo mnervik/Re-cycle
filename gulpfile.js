@@ -1,37 +1,35 @@
-/*const gulp = require('gulp');
-const less = require('gulp-less');
+const gulp = require('gulp');
+const sass = require('gulp-sass');
 const imagemin = require('gulp-imagemin');
 const browserSync = require('browser-sync').create();
 
-// Browser Sync
+sass.compiler = require('node-sass');
+
+/* Browser Sync */
 gulp.task('browser-sync', function () {
     browserSync.init({
-        files: ['./app/css/*.css', './app/images/*'],
-        server: './app'
+        files: './dist/*',
+        server: './dist'
     });
-
-    // This is just here to do a manual refresh, because the task asks for it
-    browserSync.watch('./app/images/*').on('change', browserSync.reload);
-
-    // If you wanted the site to also do a manual-refresh on .css files, uncomment bellow
-    //browserSync.watch('./app/css/*.css').on('change', browserSync.reload);
 });
 
-// Compile LESS
-gulp.task('less', function () {
-    gulp.src('./less/*.less')
-        .pipe(less())
-        .pipe(gulp.dest('./app/css'));
+/* .SCSS to .CSS */
+gulp.task('sass', function () {
+    gulp.src('./src/scss/*.scss')
+        .pipe(sass({outputStyle: 'compressed'}))
+        .pipe(gulp.dest('./dist'))
 });
 
-// Minify Images
+/* Image Minify */
 gulp.task('imagemin', function () {
-    gulp.src('./drop-images/*')
+    gulp.src('./src/img/*')
         .pipe(imagemin())
-        .pipe(gulp.dest('./app/images'));
+        .pipe(gulp.dest('./dist'))
 });
 
-gulp.task('default', ['less', 'imagemin', 'browser-sync'], function () {
-    gulp.watch('./less/*.less', ['less']);
-    gulp.watch('./drop-images/*', ['imagemin']);
-});*/
+
+/* Task Runner - DEFAULT TASK */
+gulp.task('default', ['sass', 'imagemin', 'browser-sync'], function () {
+    gulp.watch('./src/scss/*.scss', ['sass']);
+    gulp.watch('./src/img/*', ['imagemin']);
+});
